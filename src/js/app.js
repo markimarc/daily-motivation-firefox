@@ -1,6 +1,5 @@
 let settingsGear = document.getElementsByClassName('settings')[0];
 let closeButton = document.getElementsByClassName('close')[0];
-let closeButtonTooltip = document.getElementsByClassName('tooltip-close')[0];
 let connectedThemeOption = document.getElementById('connected');
 let connectedBlueThemeOption = document.getElementById('connectedBlue');
 let clearThemeOption = document.getElementById('clear');
@@ -8,39 +7,22 @@ let connectedDarkBlueThemeOption = document.getElementById('connectedDarkBlue');
 let connectedDarkThemeOption = document.getElementById('connectedDark');
 let clearDarkThemeOption = document.getElementById('clearDark');
 
-let quote = '';
-let author = '';
+const FALLBACK_QUOTE = { quote: 'The secret of getting ahead is getting started.', author: 'Mark Twain' };
 
-function loadJSON(callback) {
-
-  let xobj = new XMLHttpRequest();
-  xobj.overrideMimeType("application/json");
-  xobj.open('GET', './src/data/quotes.json', true);
-  xobj.onreadystatechange = () => {
-    if (xobj.readyState == 4 && xobj.status == "200") {
-      callback(xobj.responseText);
-    }
+async function newQuote() {
+  try {
+    const response = await fetch('./src/data/quotes.json');
+    const quotes = await response.json();
+    const randomNumber = Math.round(Math.random() * (quotes.length - 1));
+    setQuote(quotes[randomNumber].quote, quotes[randomNumber].author);
+  } catch (e) {
+    setQuote(FALLBACK_QUOTE.quote, FALLBACK_QUOTE.author);
   }
-  xobj.send(null);
-}
-
-function newQuote() {
-  loadJSON((response) => {
-    let quotes = JSON.parse(response);
-    let randomNumber = Math.random() * (Object.keys(quotes).length - 1);
-    randomNumber = Math.round(randomNumber);
-
-    quote = quotes[randomNumber].quote;
-    author = quotes[randomNumber].author;
-
-    setQuote(quote, author);
-  });
 }
 
 function setQuote(quote, author) {
-  console.log("setting quote :", quote);
-  document.getElementById('quote').innerHTML = quote;
-  document.getElementById('author').innerHTML = author;
+  document.getElementById('quote').textContent = quote;
+  document.getElementById('author').textContent = author;
 }
 
 let applyTheme = () => {
@@ -50,8 +32,13 @@ let applyTheme = () => {
     settingGearColorInvert(false);
     clear();
   } else if (theme === 'connected' || !theme) {
-    settingGearColorInvert(false);
-    canvasDots();
+    if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      settingGearColorInvert(true);
+      canvasDots('#fff', '#000', '#fff');
+    } else {
+      settingGearColorInvert(false);
+      canvasDots();
+    }
   } else if (theme === 'connectedBlue') {
     settingGearColorInvert(true);
     canvasDots('#fff', '#2196F3', '#fff');
@@ -69,48 +56,40 @@ let applyTheme = () => {
 
 let setTheme = function (theme) {
   localStorage.setItem('theme', theme);
+  clear();
   applyTheme();
 }
 
-/* ADD ONLOAD EVENTS */
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme();
+  newQuote();
+});
 
-window.onload = applyTheme();
-window.onload = newQuote();
-
-/* ADD ALL THE ON CLICK EVENT LISTERNERS */
+/* EVENT LISTENERS */
 settingsGear.addEventListener('click', () => {
   openNav();
-  turnTooltipOff();
 });
 
 closeButton.addEventListener('click', () => {
   closeNav();
 });
 
-closeButtonTooltip.addEventListener('click', () => {
-  turnTooltipOff();
-})
-
 connectedThemeOption.addEventListener('click', () => {
-  setTheme('clear');
   setTheme('connected');
   closeNav();
 });
 
 connectedBlueThemeOption.addEventListener('click', () => {
-  setTheme('clear');
   setTheme('connectedBlue');
   closeNav();
 });
 
 connectedDarkBlueThemeOption.addEventListener('click', () => {
-  setTheme('clear');
   setTheme('connectedDarkBlue');
   closeNav();
 });
 
 connectedDarkThemeOption.addEventListener('click', () => {
-  setTheme('clear');
   setTheme('connectedDark');
   closeNav();
 });
@@ -123,51 +102,19 @@ clearThemeOption.addEventListener('click', () => {
 clearDarkThemeOption.addEventListener('click', () => {
   setTheme('clearDark');
   closeNav();
-})
-
-function checkStorageForTooltipInformation() {
-  let hide = localStorage.getItem('hideTooltip');
-
-  if (hide) {
-    let tooltipElement = document.getElementsByClassName('tooltip')[0];
-    let parent = tooltipElement.parentElement;
-
-    // Remove the element
-    parent.removeChild(tooltipElement);
-  }
-}
-
-/* CHECK TO SEE IF TOOLTIP HAS ALREADY BEEN SHOW */
-checkStorageForTooltipInformation();
-
-function turnTooltipOff() {
-  let show = localStorage.setItem('hideTooltip', true);
-
-  checkStorageForTooltipInformation();
-}
+});
 
 function settingGearColorInvert(invert) {
   if (invert) {
-    // Create the <style> tag
     let style = document.createElement('style');
     style.id = 'style';
-
-    // WebKit hack :(
     style.appendChild(document.createTextNode(''));
-
-    // Add the <style> element to the page
     document.head.appendChild(style);
-
-    let sheet = style.sheet;
-
-    sheet.insertRule("img.settings { filter: invert(100%); }");
+    style.sheet.insertRule("img.settings { filter: invert(100%); }");
   } else {
-    let headElement = document.getElementsByTagName('head')[0];
     let styleElement = document.getElementById('style');
-
-    // Remove the style element if it exists
     if (styleElement) {
-      headElement.removeChild(styleElement);
+      document.head.removeChild(styleElement);
     }
   }
 }

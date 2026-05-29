@@ -22,6 +22,34 @@ Port the extension to Firefox with minimal changes:
 
 ---
 
+## ⚠️ Working with Claude Code — Rules of Engagement
+
+These rules are non-negotiable. Follow them on every task, no exceptions.
+
+### Always plan first, act second
+
+Before touching any file or running any command, present a numbered plan listing:
+- every file you intend to create, modify, or delete
+- every command you intend to run
+- a one-line reason for each step
+
+Then **stop and wait for explicit approval** ("yes", "go ahead", "do it", etc.) before proceeding. Do not interpret silence or partial answers as approval.
+
+### Never run these without asking first
+
+- `npm install` / `npm ci` / `npm run *` — any npm script or package install
+- `npx *` — any npx command, including `web-ext`
+- `git commit`, `git push`, `git merge`, `git rebase` — any command that writes to git history or the remote
+- Installing any new package or dev dependency
+
+If one of these is part of a plan, include it in the plan and wait for approval. Ask once per plan, not per command.
+
+### When in doubt, ask
+
+If the right approach is unclear, present the options and ask which to take. Never make assumptions and proceed silently.
+
+---
+
 ## Repository Structure
 
 ```

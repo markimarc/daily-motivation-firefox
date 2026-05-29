@@ -1,3 +1,4 @@
+// Modified for Firefox compatibility — original by AtaGowani (https://github.com/AtaGowani/daily-motivation)
 /** SCRIPT TO REDIRECT USER TO FORM AT UNINSTALLATION **/
 /* Check whether new version is installed */
 chrome.runtime.onInstalled.addListener(function(details) {

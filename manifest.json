@@ -3,12 +3,17 @@
   "name": "Daily Motivation - Motivational Quotes",
   "version": "2.4.15",
   "description": "Start every search with motivation. This extension presents you with a motivational quote every time you open a new tab.",
-
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "daily-motivation@firefox",
+      "strict_min_version": "109.0"
+    }
+  },
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
-  "chrome_url_overrides" : {
+  "chrome_url_overrides": {
     "newtab": "index.html"
   }
 }

@@ -40,16 +40,21 @@ If you spot something off, please tell me. I'd rather know.
 
 ## Installation
 
-### From Firefox Add-ons (AMO)
+### Install the signed extension (recommended)
 
-*(Coming soon, link will be added if I decide to publish)*
+1. Go to the [latest release](https://github.com/markimarc/daily-motivation-firefox/releases/latest)
+2. Download `daily-motivation-firefox-2.5.0.xpi`
+3. In Firefox, go to `about:addons`
+4. Click the gear icon and choose **Install Add-on From File**
+5. Select the downloaded `.xpi` file and click **Add**
+6. Open a new tab and enjoy 🎉
 
-### Manual install (try it right now)
+### Manual install (for developers)
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/markimarc/daily-motivation.git
-   cd daily-motivation
+   git clone https://github.com/markimarc/daily-motivation-firefox.git
+   cd daily-motivation-firefox
    ```
 
 2. Install and build:
@@ -62,8 +67,6 @@ If you spot something off, please tell me. I'd rather know.
    - Go to `about:debugging`
    - Click **This Firefox** > **Load Temporary Add-on**
    - Select `manifest.json` from this folder
-
-4. Open a new tab and enjoy 🎉
 
 ---
 
